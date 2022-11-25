@@ -502,8 +502,13 @@ function generateCraters() {
 function losingLifes(){
   healthBar.lifes.forEach((life,i)=>{
     craters.forEach((crater)=>{
-      if(ship.x-crater.x<20 && Math.abs(ship.y-crater.y)<20){
-        healthBar.splice(i,1)
+      if(Math.abs(ship.x-crater.x)<20 && Math.abs(ship.y-crater.y)<20){
+        healthBar.lifes.splice(i,1)
+      }
+    });
+    enemies.forEach((enemy)=>{
+      if(ship.x-enemy.y<30&& ship.y+enemy.y<30){
+        healthBar.lifes.splice(i,1)
       }
     })
   })
