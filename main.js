@@ -515,14 +515,12 @@ function drawCraters() {
       return craters.splice(index, 1);
     }
     crater.draw();
-    if(healthBar.lifes.length==0){
-      if (ship.collision(crater)) {
-        let shock = new Shock(ship.x, ship.y);
-        shock.draw();
-        impact.play();
-        craters.splice(index, 1);
-        impacts++;
-      }
+    if (ship.collision(crater)) {
+      let shock = new Shock(ship.x, ship.y);
+      shock.draw();
+      impact.play();
+      craters.splice(index, 1);
+      impacts++;
     }
   });
 }
@@ -544,14 +542,12 @@ function drawEnemies() {
       return enemies.splice(index, 1);
     }
     enemy.draw();
-    if(healthBar.lifes.length){
-      if (ship.collision(enemy)) {
-        let shock = new Shock(ship.x, ship.y);
-        shock.draw();
-        impact.play();
-        enemies.splice(index, 1);
-        impacts++;
-      }
+    if (ship.collision(enemy)) {
+      let shock = new Shock(ship.x, ship.y);
+      shock.draw();
+      impact.play();
+      enemies.splice(index, 1);
+      impacts++;
     }
   });
 }
