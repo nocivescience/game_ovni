@@ -6,6 +6,7 @@ var frames = 0;
 var score = 0;
 var impacts = 0;
 var shots = 0;
+var fuel=0;
 var audio = new Audio();
 audio.src = "./sounds/Moon Patrol - Atari 2600.mp3";
 audio.loop = true;
@@ -41,9 +42,10 @@ class Background {
     ctx.fillRect(300, 150, 400, 200);
     ctx.fillStyle = "white";
     ctx.font = "25px pixelart";
-    ctx.fillText("GAME OVER", 390, 210);
+    ctx.fillText("Game over", 390, 210);
     ctx.font = "20px pixelart";
-    ctx.fillText("YOUR SCORE " + score, 350, 250);
+    ctx.fillText("Your score " + score, 350, 250);
+    fuel=0;
     audio.pause();
     gOver.play();
     interval = null;
@@ -58,9 +60,9 @@ class Background {
     ctx.fillRect(300, 150, 400, 200);
     ctx.fillStyle = "white";
     ctx.font = "25px pixelart";
-    ctx.fillText("GAME COMPLETE", 335, 210);
+    ctx.fillText("Game Complete", 335, 210);
     ctx.font = "20px pixelart";
-    ctx.fillText("YOUR SCORE " + score, 350, 250);
+    ctx.fillText("Your score " + score, 350, 250);
     audio.pause();
     gComplete.play();
     interval = null;
@@ -75,9 +77,9 @@ class Background {
     ctx.fillRect(300, 150, 400, 200);
     ctx.fillStyle = "white";
     ctx.font = "25px pixelart";
-    ctx.fillText("GAME OVER", 390, 210);
+    ctx.fillText("Game over", 390, 210);
     ctx.font = "20px pixelart";
-    ctx.fillText("YOUR SCORE " + score, 350, 250);
+    ctx.fillText("Your score " + score, 350, 250);
     localStorage.setItem("player1", score);
     audio.pause();
     gOver.play();
@@ -93,9 +95,9 @@ class Background {
     ctx.fillRect(300, 150, 400, 200);
     ctx.fillStyle = "white";
     ctx.font = "25px pixelart";
-    ctx.fillText("GAME COMPLETE", 335, 210);
+    ctx.fillText("Game complete", 335, 210);
     ctx.font = "20px pixelart";
-    ctx.fillText("YOUR SCORE " + score, 350, 250);
+    ctx.fillText("Your Score " + score, 350, 250);
     localStorage.setItem("player1", score);
     audio.pause();
     gComplete.play();
@@ -111,18 +113,18 @@ class Background {
     ctx.fillRect(300, 50, 400, 300);
     ctx.fillStyle = "white";
     ctx.font = "25px pixelart";
-    ctx.fillText("GAME OVER", 390, 105);
+    ctx.fillText("Game over", 390, 105);
     ctx.font = "20px pixelart";
-    ctx.fillText("YOUR SCORE " + score, 350, 145);
+    ctx.fillText("Your score " + score, 350, 145);
     localStorage.setItem("player2", score);
     player1 = localStorage.getItem("player1");
     player2 = localStorage.getItem("player2");
     ctx.font = "15px pixelart";
-    ctx.fillText("PLAYER 1: " + player1, 390, 185);
-    ctx.fillText("PLAYER 2: " + player2, 390, 215);
+    ctx.fillText("Player 1: " + player1, 390, 185);
+    ctx.fillText("Player 2: " + player2, 390, 215);
     ctx.font = "25px pixelart";
     ctx.fillText(
-      player1 > player2 ? "PLAYER 1 WINS!" : "PLAYER 2 WINS!",
+      player1 > player2 ? "Player 1 wins!" : "Player 2 wins!",
       340,
       260
     );
@@ -139,18 +141,18 @@ class Background {
     ctx.fillRect(300, 50, 400, 300);
     ctx.fillStyle = "white";
     ctx.font = "25px pixelart";
-    ctx.fillText("GAME COMPLETE", 335, 105);
+    ctx.fillText("Game Complete", 335, 105);
     ctx.font = "20px pixelart";
-    ctx.fillText("YOUR SCORE " + score, 350, 145);
+    ctx.fillText("Your score " + score, 350, 145);
     localStorage.setItem("player2", score);
     player1 = localStorage.getItem("player1");
     player2 = localStorage.getItem("player2");
     ctx.font = "15px pixelart";
-    ctx.fillText("PLAYER 1: " + player1, 390, 185);
-    ctx.fillText("PLAYER 2: " + player2, 390, 215);
+    ctx.fillText("Player 1: " + player1, 390, 185);
+    ctx.fillText("Player 2: " + player2, 390, 215);
     ctx.font = "25px pixelart";
     ctx.fillText(
-      player1 > player2 ? "PLAYER 1 WINS!" : "PLAYER 2 WINS!",
+      player1 > player2 ?"Player 1 wins!" : "Player 2 wins!",
       340,
       260
     );
@@ -172,7 +174,27 @@ class Background {
     );
   }
 }
-
+class FuelBar{
+  constructor(){
+    this.x=700;
+    this.y=50;
+  }
+  draw(){
+    ctx.font='30px pixelart';
+    ctx.fillStyle='white';
+    ctx.fillText('Fuel',670,50)
+    ctx.beginPath();
+    ctx.fillStyle='orange';
+    if(fuel<0){
+      fuel=0
+    }else if(fuel>300){
+      fuel=300;
+      background.gameOver()
+    }
+    ctx.fillRect(this.x+100,this.y-25,300-fuel,20)
+    ctx.closePath();
+  }
+}
 class HealthBar {
   constructor() {
     this.x = 470;
@@ -181,30 +203,28 @@ class HealthBar {
     this.height = 75;
     this.image = new Image();
     this.image.src = "./images/h1.png";
+    this.lifes=[];
+    for(let i of [1,2,3]){
+      const life=this.image;
+      this.lifes.push(life)
+    }
   }
   draw() {
-    if (impacts < 2) this.image.src = "./images/h1.png";
-    if (impacts > 1) this.image.src = "./images/h2.png";
-    if (impacts > 3) this.image.src = "./images/h3.png";
-    if (impacts > 5) this.image.src = "./images/h4.png";
-    if (impacts > 7) this.image.src = "./images/h5.png";
-    if (impacts > 9) this.image.src = "./images/h6.png";
-    if (impacts > 11) this.image.src = "./images/h7.png";
-    if (impacts > 13) this.image.src = "./images/h8.png";
-    if (impacts > 15) this.image.src = "./images/h9.png";
-    if (impacts > 17) this.image.src = "./images/h10.png";
-    if (impacts > 19) this.image.src = "./images/h11.png";
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    this.lifes.forEach((life,i)=>{
+      ctx.drawImage(life,this.x+i*40,this.y+15,40,40)
+    })
   }
 }
 
 class Ship {
   constructor() {
-    this.image1 = new Image();
-    this.image1.src = "./images/nave1.png";
-    this.image2 = new Image();
-    this.image2.src = "./images/nave2.png";
-    this.image = this.image1;
+    this.images=[];
+    for(let i=1;i<5;i++){
+      this.imageShip=new Image();
+      this.imageShip.src=`./images/nave${i}.png`;
+      this.images.push(this.imageShip)
+    }
+    this.image = this.images[1];
     this.speed = 2;
     this.friction = 0.99;
     this.velxl = 0;
@@ -224,8 +244,17 @@ class Ship {
   }
   draw() {
     if (this.y < 350) this.y += 2;
-    if (frames % 15 === 0) {
-      this.image = this.image == this.image1 ? this.image2 : this.image1;
+    if (frames % 5 === 0) {
+      this.image = this.image == this.images[0] ? this.images[1] : this.image==this.images[1]?this.images[2]:this.image==this.images[2]?this.images[3]:this.image==this.images[3]?this.images[0]:this.images[3];
+      // if(this.image==this.images[1]){
+      //   this.image=this.images[2];
+      //   if(this.image==this.images[3]){
+      //     this.image=this.images[4];
+      //     if(this.image==this.images[4]){
+      //       this.image=this.images[1]
+      //     }
+      //   }
+      // }
     }
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
@@ -238,11 +267,18 @@ class Crater {
     this.width = 70;
     this.height = 20;
     this.image = new Image();
-    this.image.src = "./images/crater.png";
+    this.roids=[];
+    this.randomHeight=Math.random();
+    for(let i=1;i<=4;i++){
+      const roid=new Image();
+      roid.src=`./images/crater${i}.png`;
+      this.roids.push(roid);
+    }
+    this.image=this.roids[Math.floor(Math.random()*this.roids.length)]
   }
   draw() {
     if (frames % 10) this.x -= 5;
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.image, this.x, canvas.height*this.randomHeight, this.width, this.height+20);
   }
 }
 
@@ -441,6 +477,7 @@ class EnemyBullet {
 
 var background = new Background();
 var healthBar = new HealthBar();
+var fuelBar= new FuelBar();
 var ship = new Ship();
 var finalEnemy = new FinalEnemy();
 var rightBullet = new RightBullet();
@@ -462,7 +499,15 @@ function generateCraters() {
     craters.push(crater);
   }
 }
-
+function losingLifes(){
+  healthBar.lifes.forEach((life,i)=>{
+    craters.forEach((crater)=>{
+      if(ship.x-crater.x<20 && Math.abs(ship.y-crater.y)<20){
+        healthBar.splice(i,1)
+      }
+    })
+  })
+}
 function drawCraters() {
   craters.forEach((crater, index) => {
     if (crater.x < -canvas.width) {
@@ -470,12 +515,14 @@ function drawCraters() {
       return craters.splice(index, 1);
     }
     crater.draw();
-    if (ship.collision(crater)) {
-      let shock = new Shock(ship.x, ship.y);
-      shock.draw();
-      impact.play();
-      craters.splice(index, 1);
-      impacts++;
+    if(healthBar.lifes.length==0){
+      if (ship.collision(crater)) {
+        let shock = new Shock(ship.x, ship.y);
+        shock.draw();
+        impact.play();
+        craters.splice(index, 1);
+        impacts++;
+      }
     }
   });
 }
@@ -497,12 +544,14 @@ function drawEnemies() {
       return enemies.splice(index, 1);
     }
     enemy.draw();
-    if (ship.collision(enemy)) {
-      let shock = new Shock(ship.x, ship.y);
-      shock.draw();
-      impact.play();
-      enemies.splice(index, 1);
-      impacts++;
+    if(healthBar.lifes.length){
+      if (ship.collision(enemy)) {
+        let shock = new Shock(ship.x, ship.y);
+        shock.draw();
+        impact.play();
+        enemies.splice(index, 1);
+        impacts++;
+      }
     }
   });
 }
@@ -618,7 +667,7 @@ function drawRightBullets() {
           enemy.x,
           enemy.y,
           enemy.width,
-          enemy.height
+          enemy.height,
         );
         explosion.draw();
         shipRightBullets.splice(i, 1);
@@ -752,9 +801,11 @@ function game_Over(num) {
 
 window.onload = function() {
   function update() {
+    fuel-=.1;
     frames++;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     background.draw();
+    fuelBar.draw();
     ship.draw();
     healthBar.draw();
     ctx.fillStyle = "white";
@@ -963,6 +1014,9 @@ window.onload = function() {
   document.getElementById("main").onclick = function() {
     location.reload(true);
     localStorage.clear();
+    healthBar.lifes.forEach((life,i)=>{
+      healthBar.lifes.splice(i,1)
+    })
   };
 
   document.getElementById("soundOn").onclick = function() {
@@ -1005,6 +1059,8 @@ addEventListener("keydown", function(event) {
   }
   if (event.keyCode === 32 && ship.y >= 120) {
     ship.y -= 120;
+    fuel+=20;
+    fuelBar.draw()
     jump.play();
   }
   if (event.keyCode === 40) {
